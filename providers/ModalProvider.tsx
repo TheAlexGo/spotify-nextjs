@@ -1,7 +1,7 @@
 'use client';
 
 import { FC, JSX, useEffect, useState } from 'react';
-import { Modal } from '@/components/Modal/Modal';
+import { AuthModal } from '@/components/Modal/components/AuthModal/AuthModal';
 
 interface IModalProvider {
 }
@@ -19,9 +19,7 @@ export const ModalProvider: FC<IModalProvider> = ({...props}): JSX.Element | nul
 
     return (
         <>
-            <Modal title="Test" description="Test description" isOpen onChange={() => {}}>
-                Test children
-            </Modal>
+            <AuthModal />
         </>
     );
 };

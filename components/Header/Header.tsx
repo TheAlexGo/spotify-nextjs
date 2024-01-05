@@ -7,17 +7,39 @@ import { RxCaretLeft, RxCaretRight } from 'react-icons/rx';
 import { HiHome } from 'react-icons/hi';
 import { BiSearch } from 'react-icons/bi';
 import { Button } from '@/components/Button/Button';
+import { useAuthModal } from '@/hooks/useAuthModal';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { useUser } from '@/hooks/useUser';
+import { FaUserAlt } from 'react-icons/fa';
+import { toast } from 'react-hot-toast';
 
 interface IHeader extends PropsWithChildren {
     className?: string;
 }
 
 export const Header: FC<IHeader> = ({ children, className}): JSX.Element => {
+    const { onOpen, onClose } = useAuthModal();
     const router = useRouter();
 
-    const handleLogout = () => {
-        // handle logout in the future
+    const supabaseClient = useSupabaseClient();
+    const { user } = useUser();
+
+    const handleLogout = async () => {
+        const { error } = await supabaseClient.auth.signOut();
+
+        // todo: Reset any laying songs
+        router.refresh();
+
+        if (error) {
+            toast.error(error.message);
+        } else {
+            toast.success('Logged out!');
+        }
     };
+
+    const profileClickHandler = () => {
+        router.push('/account');
+    }
 
     const backClickHandler = () => {
         router.back();
@@ -26,10 +48,6 @@ export const Header: FC<IHeader> = ({ children, className}): JSX.Element => {
     const forwardClickHandler = () => {
         router.forward();
     };
-
-    const signUpClickHandler = () => {};
-
-    const loginClickHandler = () => {};
 
     return (
         <div
@@ -133,32 +151,59 @@ export const Header: FC<IHeader> = ({ children, className}): JSX.Element => {
                         gap-x-4
                     "
                 >
-                    <>
-                        <div>
-                            <Button
-                                className="
+                    {
+                        user
+                            ? (
+                                <div
+                                    className="
+                                        flex
+                                        gap-x-4
+                                        items-center
+                                    "
+                                >
+                                    <Button
+                                        onClick={handleLogout}
+                                        className="bg-white px-6 py-2"
+                                    >
+                                        Logout
+                                    </Button>
+                                    <Button
+                                        onClick={profileClickHandler}
+                                        className="bg-white"
+                                    >
+                                        <FaUserAlt />
+                                    </Button>
+                                </div>
+                            )
+                            : (
+                                <>
+                                    <div>
+                                        <Button
+                                            className="
                                 bg-transparent
                                 text-neutral-300
                                 font-medium
                             "
-                                onClick={signUpClickHandler}
-                            >
-                                Sign up
-                            </Button>
-                        </div>
-                        <div>
-                            <Button
-                                className="
+                                            onClick={onOpen}
+                                        >
+                                            Sign up
+                                        </Button>
+                                    </div>
+                                    <div>
+                                        <Button
+                                            className="
                                 bg-white
                                 px-6
                                 py-2
                             "
-                                onClick={loginClickHandler}
-                            >
-                                Login
-                            </Button>
-                        </div>
-                    </>
+                                            onClick={onOpen}
+                                        >
+                                            Log in
+                                        </Button>
+                                    </div>
+                                </>
+                            )
+                    }
                 </div>
             </div>
             {children}

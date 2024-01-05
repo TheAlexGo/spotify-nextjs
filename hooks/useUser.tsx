@@ -42,7 +42,7 @@ export const MyUserContextProvider = (props: IMyUserContextProvider) => {
 
     const getSubscription = useCallback(() =>
         supabase
-            .from('users')
+            .from('subscriptions')
             .select('*, prices(*, products(*))')
             .in('status', ['trialing', 'active'])
             .single(),
