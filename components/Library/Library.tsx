@@ -2,13 +2,22 @@
 import { FC, JSX } from 'react';
 import { TbPlaylist } from 'react-icons/tb';
 import { AiOutlinePlus } from 'react-icons/ai';
+import { useAuthModal } from '@/hooks/useAuthModal';
+import { useUser } from '@/hooks/useUser';
+import { useUploadModal } from '@/hooks/useUploadModal';
 
-interface ILibrary {
-}
+export const Library: FC = (): JSX.Element => {
+    const authModal = useAuthModal();
+    const uploadModal = useUploadModal();
+    const { user } = useUser();
 
-export const Library: FC<ILibrary> = ({...props}): JSX.Element => {
     const clickHandler = () => {
-        // Handle upload later
+        if (!user) {
+            return authModal.onOpen();
+        }
+
+        // TODO: check for subscription
+        return uploadModal.onOpen();
     }
     return (
         <div className="flex flex-col">

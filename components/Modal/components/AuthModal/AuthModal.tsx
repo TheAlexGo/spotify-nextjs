@@ -18,7 +18,7 @@ export const AuthModal: FC<IAuthModal> = ({...props}): JSX.Element => {
     const { onClose, isOpen } = useAuthModal();
 
     const changeHandler = (open: boolean) => {
-        if (!isOpen) {
+        if (!open) {
             onClose();
         }
     }
