@@ -9,6 +9,8 @@ interface ISearch {
     }
 }
 
+export const revalidate = 0;
+
 export default async function Search({ searchParams }: ISearch) {
     const songs = await getSongsByTitle(searchParams.title);
 
