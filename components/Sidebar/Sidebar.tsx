@@ -6,10 +6,13 @@ import { FC, JSX, PropsWithChildren, useMemo } from 'react';
 import { BiSearch } from 'react-icons/bi';
 import { HiHome } from 'react-icons/hi';
 import { Library } from '@/components/Library/Library';
+import { ISong } from '@/types';
 
-interface ISidebar extends PropsWithChildren {}
+interface ISidebar extends PropsWithChildren {
+    songs: ISong[];
+}
 
-export const Sidebar: FC<ISidebar> = ({ children }): JSX.Element => {
+export const Sidebar: FC<ISidebar> = ({ children, songs }): JSX.Element => {
     const pathname = usePathname();
 
     const routes = useMemo(() => [
@@ -58,7 +61,7 @@ export const Sidebar: FC<ISidebar> = ({ children }): JSX.Element => {
                     </div>
                 </Box>
                 <Box className="overflow-y-auto h-full">
-                    <Library />
+                    <Library songs={songs} />
                 </Box>
             </div>
             <main className="h-full flex-1 overflow-y-auto py-2">
