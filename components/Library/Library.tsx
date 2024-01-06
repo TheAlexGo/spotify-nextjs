@@ -48,16 +48,17 @@ export const Library: FC = (): JSX.Element => {
                         Your library
                     </p>
                 </div>
-                <AiOutlinePlus
+                <button
                     className="
                         text-neutral-400
                         cursor-pointer
                         hover:text-white
                         transition
                     "
-                    size={20}
                     onClick={clickHandler}
-                />
+                >
+                    <AiOutlinePlus size={20} />
+                </button>
             </div>
             <div
                 className="

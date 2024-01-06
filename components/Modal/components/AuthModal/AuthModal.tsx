@@ -25,6 +25,7 @@ export const AuthModal: FC<IAuthModal> = ({...props}): JSX.Element => {
 
     useEffect(() => {
         if (session) {
+            // todo: А ОНО НАМ НАДО????? ОНО ЛОМАЕТ НАМ 404!!!!
             router.refresh();
             onClose();
         }
