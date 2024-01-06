@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, JSX, useEffect, useState } from 'react';
+import { FC, JSX, useEffect, useMemo, useState } from 'react';
 import { ISong } from '@/types';
 import { MediaItem } from '@/components/MediaItem/MediaItem';
 import { LikeButton } from '@/components/LikeButton/LikeButton';
@@ -20,6 +20,22 @@ export const PlayerContent: FC<IPlayerContent> = ({ song, songUrl }): JSX.Elemen
     const player = usePlayer();
     const [volume, setVolume] = useState(1);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [currentSeconds, setCurrentSeconds] = useState(0);
+    const [isDragged, setIsDragged] = useState(false);
+
+    const [play, { pause, sound, duration }] = useSound(
+        songUrl,
+        {
+            volume,
+            onplay: () => setIsPlaying(true),
+            onend: () => {
+                setIsPlaying(false);
+                onPlayNext();
+            },
+            onpause: () => setIsPlaying(false),
+            format: ['mp3'],
+        }
+    );
 
     const Icon = isPlaying ? BsPauseFill : BsPlayFill;
     const VolumeIcon = volume === 0 ? HiSpeakerXMark : HiSpeakerWave;
@@ -54,20 +70,6 @@ export const PlayerContent: FC<IPlayerContent> = ({ song, songUrl }): JSX.Elemen
         player.setId(previousSong);
     };
 
-    const [play, { pause, sound }] = useSound(
-        songUrl,
-        {
-            volume,
-            onplay: () => setIsPlaying(true),
-            onend: () => {
-                setIsPlaying(false);
-                onPlayNext();
-            },
-            onpause: () => setIsPlaying(false),
-            format: ['mp3']
-        }
-    );
-
     const playHandler = () => {
         if (!isPlaying) {
             play();
@@ -86,7 +88,43 @@ export const PlayerContent: FC<IPlayerContent> = ({ song, songUrl }): JSX.Elemen
 
     const volumeChangeHandler = (value: number) => {
         setVolume(value);
-    }
+    };
+
+    const durationChangeHandler = (value: number) => {
+        setCurrentSeconds(value);
+    };
+
+    const durationChangeCommitHandler = ([value]: number[]) => {
+        sound?.seek(value);
+        setCurrentSeconds(value);
+    };
+
+    const durationSliderPointerDownHandler = () => {
+        setIsDragged(true);
+    };
+
+    const durationSliderPointerUpHandler = () => {
+        setIsDragged(false);
+    };
+
+    const currentTime = useMemo(() => {
+        const result = [];
+
+        result.push(Math.floor(currentSeconds / 60));
+        result.push(('0' + Math.floor(currentSeconds % 60)).slice(-2));
+
+        return result.join(':');
+    }, [currentSeconds]);
+
+    const fullTime = useMemo(() => {
+        const result = [];
+
+        const seconds = duration! / 1000;
+        result.push(Math.floor(seconds / 60));
+        result.push(('0' + Math.floor(seconds % 60)).slice(-2));
+
+        return result.join(':');
+    }, [duration]);
 
     useEffect(() => {
         sound?.play();
@@ -96,35 +134,54 @@ export const PlayerContent: FC<IPlayerContent> = ({ song, songUrl }): JSX.Elemen
         }
     }, [sound]);
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (!sound || isDragged) {
+                return;
+            }
+            if (!isPlaying) {
+                clearInterval(interval);
+                return;
+            }
+            const seconds = sound.seek();
+            setCurrentSeconds(seconds);
+        }, 1000);
+
+        return () => {
+            clearInterval(interval);
+        }
+    }, [isDragged, isPlaying, sound]);
+
     return (
-        <div
-            className="
+        <div>
+            <div
+                className="
                 grid
                 grid-cols-2
                 md:grid-cols-3
                 h-full
             "
-        >
-            <div
-                className="
+            >
+                <div
+                    className="
                     flex
                     w-full
                     justify-start
                 "
-            >
-                <div
-                    className="
+                >
+                    <div
+                        className="
                         flex
                         items-center
                         gap-x-4
                     "
-                >
-                    <MediaItem data={song} />
-                    <LikeButton songId={song.id} />
+                    >
+                        <MediaItem data={song} />
+                        <LikeButton songId={song.id} />
+                    </div>
                 </div>
-            </div>
-            <div
-                className="
+                <div
+                    className="
                         flex
                         md:hidden
                         col-auto
@@ -132,9 +189,9 @@ export const PlayerContent: FC<IPlayerContent> = ({ song, songUrl }): JSX.Elemen
                         justify-end
                         items-center
                     "
-            >
-                <button
-                    className="
+                >
+                    <button
+                        className="
                             h-10
                             w-10
                             flex
@@ -145,87 +202,137 @@ export const PlayerContent: FC<IPlayerContent> = ({ song, songUrl }): JSX.Elemen
                             p-1
                             cursor-pointer
                         "
-                    onClick={() => {}}
-                >
-                    <Icon className="text-black" size={30} />
-                </button>
-            </div>
+                        onClick={playHandler}
+                    >
+                        <Icon className="text-black" size={30} />
+                    </button>
+                </div>
 
-            <div
-                className="
+                <div
+                    className="
                     hidden
                     h-full
                     md:flex
-                    justify-center
-                    items-center
+                    flex-col
+                    gap-y-2
                     w-full
                     max-w-[722px]
-                    gap-x-6
                 "
-            >
-                <button onClick={onPlayPrevious}>
-                    <AiFillStepBackward
-                        className="
-                        text-neutral-400
-                        cursor-pointer
-                        hover:text-white
-                        transition
-                    "
-                        size={30}
-                    />
-                </button>
-                <button
-                    className="
-                        flex
-                        items-center
-                        justify-center
-                        h-10
-                        w-10
-                        rounded-full
-                        bg-white
-                        p-1
-                        cursor-pointer
-                    "
-                    onClick={playHandler}
                 >
-                    <Icon className="text-black" size={30} />
-                </button>
-                <button onClick={onPlayNext}>
-                    <AiFillStepForward
+                    <div
                         className="
-                            text-neutral-400
-                            hover:text-white
-                            transition
+                            flex
+                            justify-center
+                            items-center
+                            gap-x-6
                         "
-                        size={30}
-                    />
-                </button>
-            </div>
+                    >
+                        <button onClick={onPlayPrevious}>
+                            <AiFillStepBackward
+                                className="
+                                    text-neutral-400
+                                    cursor-pointer
+                                    hover:text-white
+                                    transition
+                                "
+                                size={30}
+                            />
+                        </button>
+                        <button
+                            className="
+                                flex
+                                items-center
+                                justify-center
+                                h-10
+                                w-10
+                                rounded-full
+                                bg-white
+                                p-1
+                                cursor-pointer
+                            "
+                            onClick={playHandler}
+                        >
+                            <Icon className="text-black" size={30} />
+                        </button>
+                        <button onClick={onPlayNext}>
+                            <AiFillStepForward
+                                className="
+                                    text-neutral-400
+                                    hover:text-white
+                                    transition
+                                "
+                                size={30}
+                            />
+                        </button>
+                    </div>
 
-            <div
-                className="
+                    <div
+                        className="
+                            flex
+                            items-center
+                            justify-center
+                            gap-x-3
+                        "
+                    >
+                        <span
+                            className="
+                                text-sm
+                                text-neutral-400
+                            "
+                        >
+                            {currentTime}
+                        </span>
+                        <Slider
+                            className="h-3"
+                            value={currentSeconds}
+                            defaultValue={duration!}
+                            max={duration! / 1000}
+                            step={1}
+                            onChange={durationChangeHandler}
+                            onValueCommit={durationChangeCommitHandler}
+                            onPointerDown={durationSliderPointerDownHandler}
+                            onPointerUp={durationSliderPointerUpHandler}
+                            aria-label="Sound duration"
+                        />
+                        <span
+                            className="
+                                text-sm
+                                text-neutral-400
+                            "
+                        >
+                            {fullTime}
+                        </span>
+                    </div>
+                </div>
+
+                <div
+                    className="
                     hidden
                     md:flex
                     w-full
                     justify-end
                     pr-2
                 "
-            >
-                <div
-                    className="
+                >
+                    <div
+                        className="
                         flex
                         items-center
                         gap-x-2
                         w-[120px]
                     "
-                >
-                    <button onClick={toggleMute}>
-                        <VolumeIcon size={34} />
-                    </button>
-                    <Slider
-                        value={volume}
-                        onChange={volumeChangeHandler}
-                    />
+                    >
+                        <button onClick={toggleMute}>
+                            <VolumeIcon size={34} />
+                        </button>
+                        <Slider
+                            className="h-10"
+                            value={volume}
+                            max={1}
+                            onChange={volumeChangeHandler}
+                            aria-label="Volume"
+                        />
+                    </div>
                 </div>
             </div>
         </div>
