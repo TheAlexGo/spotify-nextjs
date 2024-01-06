@@ -3,12 +3,15 @@
 import { FC, JSX } from 'react';
 import { ISong } from '@/types';
 import { SongItem } from '@/components/SongItem/SongItem';
+import { useOnPlay } from '@/hooks/useOnPlay';
 
 interface IPageContent {
     songs: ISong[];
 }
 
 export const PageContent: FC<IPageContent> = ({ songs }): JSX.Element => {
+    const onPlay = useOnPlay(songs);
+
     if (songs.length === 0) {
         return (
             <div className="mt-4 text-neutral-400">
@@ -30,7 +33,11 @@ export const PageContent: FC<IPageContent> = ({ songs }): JSX.Element => {
                 mt-4
             "
         >
-            {songs.map((song) => <SongItem key={song.id} onClick={() => {}} data={song} />)}
+            {songs.map((song) => <SongItem
+                key={song.id}
+                onClick={onPlay}
+                data={song}
+            />)}
         </div>
     );
 };

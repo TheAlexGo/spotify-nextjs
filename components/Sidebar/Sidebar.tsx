@@ -7,6 +7,8 @@ import { BiSearch } from 'react-icons/bi';
 import { HiHome } from 'react-icons/hi';
 import { Library } from '@/components/Library/Library';
 import { ISong } from '@/types';
+import { usePlayer } from '@/hooks/usePlayer';
+import { twMerge } from 'tailwind-merge';
 
 interface ISidebar extends PropsWithChildren {
     songs: ISong[];
@@ -14,6 +16,7 @@ interface ISidebar extends PropsWithChildren {
 
 export const Sidebar: FC<ISidebar> = ({ children, songs }): JSX.Element => {
     const pathname = usePathname();
+    const player = usePlayer();
 
     const routes = useMemo(() => [
         {
@@ -31,7 +34,12 @@ export const Sidebar: FC<ISidebar> = ({ children, songs }): JSX.Element => {
     ], [pathname]);
 
     return (
-        <div className="flex h-full">
+        <div className={twMerge(`
+            flex
+            h-full
+        `,
+            player.activeId && 'h-[calc(100%-80px)]'
+        )}>
             <div
                 className="
                     hidden

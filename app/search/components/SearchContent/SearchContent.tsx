@@ -4,12 +4,15 @@ import { FC, JSX } from 'react';
 import { ISong } from '@/types';
 import { MediaItem } from '@/components/MediaItem/MediaItem';
 import { LikeButton } from '@/components/LikeButton/LikeButton';
+import { useOnPlay } from '@/hooks/useOnPlay';
 
 interface ISearchContent {
     songs: ISong[];
 }
 
 export const SearchContent: FC<ISearchContent> = ({ songs }): JSX.Element => {
+    const onPlay = useOnPlay(songs);
+
     if (songs.length === 0) {
         return (
             <div
@@ -50,7 +53,7 @@ export const SearchContent: FC<ISearchContent> = ({ songs }): JSX.Element => {
                     <div className="flex-1">
                         <MediaItem
                             data={song}
-                            onClick={() => {}}
+                            onClick={onPlay}
                         />
                     </div>
                     <LikeButton songId={song.id} />

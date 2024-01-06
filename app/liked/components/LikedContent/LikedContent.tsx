@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useUser } from '@/hooks/useUser';
 import { MediaItem } from '@/components/MediaItem/MediaItem';
 import { LikeButton } from '@/components/LikeButton/LikeButton';
+import { useOnPlay } from '@/hooks/useOnPlay';
 
 interface ILikedContent {
     songs: ISong[];
@@ -14,6 +15,7 @@ interface ILikedContent {
 export const LikedContent: FC<ILikedContent> = ({ songs }): JSX.Element => {
     const router = useRouter();
     const { isLoading, user } = useUser();
+    const onPlay = useOnPlay(songs);
 
     useEffect(() => {
         if (!isLoading && !user) {
@@ -61,7 +63,7 @@ export const LikedContent: FC<ILikedContent> = ({ songs }): JSX.Element => {
                     <div className="flex-1">
                         <MediaItem
                             data={song}
-                            onClick={() => {}}
+                            onClick={onPlay}
                         />
                     </div>
                     <LikeButton songId={song.id} />
