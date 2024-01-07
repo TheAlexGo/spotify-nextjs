@@ -58,4 +58,4 @@ jobs:
             cd ${{ vars.WORK_DIR }}
             docker compose pull
             docker compose up -d
-            docker image prune
+            docker image prune -f
