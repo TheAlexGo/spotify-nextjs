@@ -27,6 +27,7 @@ export const PlayerContent: FC<IPlayerContent> = ({ song, songUrl }): JSX.Elemen
         songUrl,
         {
             volume,
+            html5: true,
             onplay: () => setIsPlaying(true),
             onend: () => {
                 setIsPlaying(false);
