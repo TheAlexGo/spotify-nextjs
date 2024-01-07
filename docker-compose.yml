@@ -1,7 +1,7 @@
 services:
     frontend:
         container_name: spotify-next
-        image: ghcr.io/thealexgo/spotify-next:latest
+        image: ghcr.io/thealexgo/spotify-nextjs:main
         restart: always
         ports:
             - 3000:3000
