@@ -7,15 +7,17 @@ import { useRouter } from 'next/navigation';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { useAuthModal } from '@/hooks/useAuthModal';
+import { useUser } from '@/hooks/useUser';
 
 interface IAuthModal {
 }
 
-export const AuthModal: FC<IAuthModal> = ({...props}): JSX.Element => {
+export const AuthModal: FC<IAuthModal> = (): JSX.Element => {
     const supabaseClient = useSupabaseClient();
     const router = useRouter();
     const { session } = useSessionContext();
     const { onClose, isOpen } = useAuthModal();
+    const { user } = useUser();
 
     const changeHandler = (open: boolean) => {
         if (!open) {
@@ -25,11 +27,15 @@ export const AuthModal: FC<IAuthModal> = ({...props}): JSX.Element => {
 
     useEffect(() => {
         if (session) {
-            // todo: А ОНО НАМ НАДО????? ОНО ЛОМАЕТ НАМ 404!!!!
-            router.refresh();
             onClose();
         }
-    }, [onClose, router, session]);
+    }, [onClose, session]);
+
+    useEffect(() => {
+        if (session && (isOpen || !user)) {
+            router.refresh();
+        }
+    }, [isOpen, router, session, user]);
 
     return (
         <Modal

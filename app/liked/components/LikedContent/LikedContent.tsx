@@ -14,14 +14,14 @@ interface ILikedContent {
 
 export const LikedContent: FC<ILikedContent> = ({ songs }): JSX.Element => {
     const router = useRouter();
-    const { isLoading, user } = useUser();
+    const { user } = useUser();
     const onPlay = useOnPlay(songs);
 
     useEffect(() => {
-        if (!isLoading && !user) {
+        if (!user) {
             router.replace('/');
         }
-    }, [isLoading, router, user]);
+    }, [router, user]);
 
     if (songs.length === 0) {
         return (
