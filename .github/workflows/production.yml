@@ -46,3 +46,16 @@ jobs:
 
       - name: Delete env file
         run: rm .env
+
+      - name: Run updated image
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST_IP }}
+          username: ${{ secrets.HOST_USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd ${{ vars.WORK_DIR }}
+            docker compose pull
+            docker compose up -d
+            docker image prune
