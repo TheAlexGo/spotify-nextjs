@@ -7,11 +7,12 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { Input } from '@/components/Input/Input';
 
 interface ISearchInput {
+    searchValue: string;
 }
 
-export const SearchInput: FC<ISearchInput> = ({...props}): JSX.Element => {
+export const SearchInput: FC<ISearchInput> = ({ searchValue }): JSX.Element => {
     const router = useRouter();
-    const [value, setValue] = useState<string>('');
+    const [value, setValue] = useState<string>(searchValue || '');
     const debouncedValue = useDebounce<string>(value, 500);
 
     const changeHandler: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
@@ -20,7 +21,7 @@ export const SearchInput: FC<ISearchInput> = ({...props}): JSX.Element => {
 
     useEffect(() => {
         const query = {
-            title: debouncedValue,
+            title: debouncedValue || undefined,
         };
 
         const url = qs.stringifyUrl({

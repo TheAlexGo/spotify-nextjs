@@ -11,8 +11,8 @@ interface ISearch {
 
 export const revalidate = 0;
 
-export default async function Search({ searchParams }: ISearch) {
-    const songs = await getSongsByTitle(searchParams.title);
+export default async function Search({ searchParams: { title } }: ISearch) {
+    const songs = await getSongsByTitle(title);
 
     return (
         <div
@@ -34,7 +34,7 @@ export default async function Search({ searchParams }: ISearch) {
                     <h1 className="text-white text-3xl font-semibold">
                         Search
                     </h1>
-                    <SearchInput />
+                    <SearchInput searchValue={title} />
                 </div>
             </Header>
             <SearchContent songs={songs} />

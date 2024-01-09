@@ -13,6 +13,7 @@ import { useUser } from '@/hooks/useUser';
 import { FaUserAlt } from 'react-icons/fa';
 import { toast } from 'react-hot-toast';
 import { usePlayer } from '@/hooks/usePlayer';
+import Link from 'next/link';
 
 interface IHeader extends PropsWithChildren {
     className?: string;
@@ -116,7 +117,8 @@ export const Header: FC<IHeader> = ({ children, className}): JSX.Element => {
                         items-center
                     "
                 >
-                    <button
+                    <Link
+                        href="/"
                         className="
                             rounded-full
                             p-2
@@ -129,8 +131,9 @@ export const Header: FC<IHeader> = ({ children, className}): JSX.Element => {
                         "
                     >
                         <HiHome className="text-black" size={20} />
-                    </button>
-                    <button
+                    </Link>
+                    <Link
+                        href="/search"
                         className="
                             rounded-full
                             p-2
@@ -143,7 +146,7 @@ export const Header: FC<IHeader> = ({ children, className}): JSX.Element => {
                         "
                     >
                         <BiSearch className="text-black" size={20} />
-                    </button>
+                    </Link>
                 </div>
                 <div
                     className="
