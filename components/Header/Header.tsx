@@ -40,10 +40,6 @@ export const Header: FC<IHeader> = ({ children, className}): JSX.Element => {
         }
     };
 
-    const profileClickHandler = () => {
-        router.push('/account');
-    }
-
     const backClickHandler = () => {
         router.back();
     };
@@ -129,6 +125,7 @@ export const Header: FC<IHeader> = ({ children, className}): JSX.Element => {
                             hover:opacity-75
                             transition
                         "
+                        aria-label="Home"
                     >
                         <HiHome className="text-black" size={20} />
                     </Link>
@@ -144,6 +141,7 @@ export const Header: FC<IHeader> = ({ children, className}): JSX.Element => {
                             hover:opacity-75
                             transition
                         "
+                        aria-label="Search"
                     >
                         <BiSearch className="text-black" size={20} />
                     </Link>
@@ -172,12 +170,13 @@ export const Header: FC<IHeader> = ({ children, className}): JSX.Element => {
                                     >
                                         Logout
                                     </Button>
-                                    <Button
-                                        onClick={profileClickHandler}
+                                    <Link
+                                        href="/account"
                                         className="bg-white"
+                                        aria-label="Profile"
                                     >
                                         <FaUserAlt />
-                                    </Button>
+                                    </Link>
                                 </div>
                             )
                             : (
