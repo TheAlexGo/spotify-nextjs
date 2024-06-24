@@ -60,4 +60,11 @@ export interface ISong {
     title: string;
     song_path: string;
     image_path: string;
+    liked: boolean;
+}
+
+export interface ILikedSong {
+    created_at: number;
+    song_id: string;
+    user_id: string
 }

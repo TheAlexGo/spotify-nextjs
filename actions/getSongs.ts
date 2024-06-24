@@ -1,4 +1,4 @@
-import { ISong } from '@/types';
+import { ILikedSong, ISong } from '@/types';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
@@ -7,9 +7,18 @@ export const getSongs = async (): Promise<ISong[]> => {
         cookies,
     });
 
+    const {
+        data: {
+            user,
+        },
+    } = await supabase.auth.getUser();
+
     const { data, error } = await supabase
         .from('songs')
-        .select('*')
+        .select(`
+            *,
+            liked_songs(user_id)
+        `)
         .order('created_at', {
             ascending: false,
         });
@@ -18,5 +27,12 @@ export const getSongs = async (): Promise<ISong[]> => {
         console.log(error);
     }
 
-    return data as ISong[] || [];
+    return data!.map((song) => {
+        return {
+            ...song,
+            liked: user
+                ? song.liked_songs.find(({ user_id }: ILikedSong) => user_id === user.id)
+                : false,
+        }
+    }) as ISong[] || [];
 }

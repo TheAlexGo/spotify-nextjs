@@ -1,9 +1,12 @@
 'use client';
 
+import { useAuthModal } from '@/hooks/useAuthModal';
+import { useUser } from '@/hooks/useUser';
 import { FC, JSX } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { FaPlay } from 'react-icons/fa';
+import NProgress from 'nprogress';
 
 interface IListItem {
     image: string;
@@ -13,9 +16,14 @@ interface IListItem {
 
 export const ListItem: FC<IListItem> = ({ image, name, href }): JSX.Element => {
     const router = useRouter();
+    const authModal = useAuthModal();
+    const { user } = useUser();
 
     const clickHandler = () => {
-        // todo: Add authentication before push
+        if (!user) {
+            return authModal.onOpen();
+        }
+        NProgress.start();
         router.push(href);
     };
 

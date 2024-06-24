@@ -56,7 +56,7 @@ export const SearchContent: FC<ISearchContent> = ({ songs }): JSX.Element => {
                             onClick={onPlay}
                         />
                     </div>
-                    <LikeButton songId={song.id} />
+                    <LikeButton song={song} />
                 </div>
             ))}
         </div>

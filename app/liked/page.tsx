@@ -1,11 +1,19 @@
 import { getLikedSongs } from '@/actions/getLikedSongs';
+import { getUser } from '@/actions/getUser';
 import { Header } from '@/components/Header/Header';
 import Image from 'next/image';
 import { LikedContent } from '@/app/liked/components/LikedContent/LikedContent';
+import { redirect } from 'next/navigation';
 
 export const revalidate = 0;
 
 export default async function Liked() {
+    const { user } = await getUser();
+    if (!user) {
+        redirect('/');
+
+    }
+
     const songs = await getLikedSongs();
 
     return (

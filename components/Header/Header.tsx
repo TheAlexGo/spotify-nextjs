@@ -172,7 +172,6 @@ export const Header: FC<IHeader> = ({ children, className}): JSX.Element => {
                                     </Button>
                                     <Link
                                         href="/account"
-                                        className="bg-white"
                                         aria-label="Profile"
                                     >
                                         <FaUserAlt />

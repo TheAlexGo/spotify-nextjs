@@ -178,7 +178,7 @@ export const PlayerContent: FC<IPlayerContent> = ({ song, songUrl }): JSX.Elemen
                     "
                     >
                         <MediaItem data={song} />
-                        <LikeButton songId={song.id} />
+                        <LikeButton song={song} />
                     </div>
                 </div>
                 <div

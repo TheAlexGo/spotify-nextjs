@@ -2,6 +2,7 @@
 
 import uniqid from 'uniqid';
 import { FC, JSX, useState } from 'react';
+import { transliterate } from '@/utils/text';
 import { Modal } from '@/components/Modal/Modal';
 import { useUploadModal } from '@/hooks/useUploadModal';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
@@ -60,7 +61,7 @@ export const UploadModal: FC = (): JSX.Element => {
             } = await supabaseClient
                 .storage
                 .from('songs')
-                .upload(`song-${values.title}-${uniqueID}`, songFile, {
+                .upload(`song-${transliterate(values.title)}-${uniqueID}`, songFile, {
                     cacheControl: '3600',
                     upsert: false,
                 });
@@ -77,7 +78,7 @@ export const UploadModal: FC = (): JSX.Element => {
             } = await supabaseClient
                 .storage
                 .from('images')
-                .upload(`image-${values.title}-${uniqueID}`, imageFile, {
+                .upload(`image-${transliterate(values.title)}-${uniqueID}`, imageFile, {
                     cacheControl: '3600',
                     upsert: false,
                 });

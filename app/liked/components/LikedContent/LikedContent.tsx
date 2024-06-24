@@ -1,9 +1,8 @@
 'use client';
 
+import NProgress from 'nprogress';
 import { FC, JSX, useEffect } from 'react';
 import { ISong } from '@/types';
-import { useRouter } from 'next/navigation';
-import { useUser } from '@/hooks/useUser';
 import { MediaItem } from '@/components/MediaItem/MediaItem';
 import { LikeButton } from '@/components/LikeButton/LikeButton';
 import { useOnPlay } from '@/hooks/useOnPlay';
@@ -13,15 +12,11 @@ interface ILikedContent {
 }
 
 export const LikedContent: FC<ILikedContent> = ({ songs }): JSX.Element => {
-    const router = useRouter();
-    const { user } = useUser();
     const onPlay = useOnPlay(songs);
 
     useEffect(() => {
-        if (!user) {
-            router.replace('/');
-        }
-    }, [router, user]);
+        NProgress.done();
+    }, []);
 
     if (songs.length === 0) {
         return (
@@ -66,7 +61,7 @@ export const LikedContent: FC<ILikedContent> = ({ songs }): JSX.Element => {
                             onClick={onPlay}
                         />
                     </div>
-                    <LikeButton songId={song.id} />
+                    <LikeButton song={song} />
                 </div>
             ))}
         </div>

@@ -1,5 +1,7 @@
 'use client';
 
+import { ISong } from '@/types';
+import NProgress from 'nprogress';
 import { FC, JSX, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSessionContext } from '@supabase/auth-helpers-react';
@@ -9,38 +11,17 @@ import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import { toast } from 'react-hot-toast';
 
 interface ILikeButton {
-    songId: string;
+    song: ISong;
 }
 
-export const LikeButton: FC<ILikeButton> = ({ songId }): JSX.Element => {
+export const LikeButton: FC<ILikeButton> = ({ song: { id: songId, liked } }): JSX.Element => {
     const router = useRouter();
     const { supabaseClient } = useSessionContext();
 
     const authModal = useAuthModal();
     const { user } = useUser();
 
-    const [isLiked, setIsLiked] = useState(false);
-
-    useEffect(() => {
-        if (!user?.id) {
-            return;
-        }
-
-        const fetchData = async () => {
-            const { data, error } = await supabaseClient
-                .from('liked_songs')
-                .select('*')
-                .eq('user_id', user.id)
-                .eq('song_id', songId)
-                .single()
-
-            if (!error && data) {
-                setIsLiked(true);
-            }
-        }
-
-        fetchData();
-    }, [songId, supabaseClient, user?.id]);
+    const [isLiked, setIsLiked] = useState(liked);
 
     const Icon = isLiked ? AiFillHeart : AiOutlineHeart;
 
@@ -49,6 +30,7 @@ export const LikeButton: FC<ILikeButton> = ({ songId }): JSX.Element => {
             return authModal.onOpen();
         }
 
+        NProgress.start();
         if (isLiked) {
             const { error } = await supabaseClient
                 .from('liked_songs')
@@ -78,6 +60,7 @@ export const LikeButton: FC<ILikeButton> = ({ songId }): JSX.Element => {
         }
 
         router.refresh();
+        NProgress.done();
     }
 
     return (

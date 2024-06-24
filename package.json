@@ -17,6 +17,7 @@
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/supabase-js": "^2.39.2",
     "next": "14.0.4",
+    "nextjs-toploader": "^1.6.12",
     "query-string": "^8.1.0",
     "react": "^18",
     "react-dom": "^18",
@@ -32,6 +33,7 @@
   "devDependencies": {
     "@types/howler": "^2.2.11",
     "@types/node": "^20",
+    "@types/nprogress": "^0.2.3",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/uniqid": "^5.3.4",
