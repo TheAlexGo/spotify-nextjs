@@ -49,7 +49,7 @@ export const Header: FC<IHeader> = ({ children, className}): JSX.Element => {
     };
 
     return (
-        <div
+        <header
             className={twMerge(`
                 h-fit
                 bg-gradient-to-b
@@ -210,6 +210,6 @@ export const Header: FC<IHeader> = ({ children, className}): JSX.Element => {
                 </div>
             </div>
             {children}
-        </div>
+        </header>
     );
 };

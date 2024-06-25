@@ -127,6 +127,22 @@ export const PlayerContent: FC<IPlayerContent> = ({ song, songUrl }): JSX.Elemen
         return result.join(':');
     }, [duration]);
 
+    const sliderComponent = useMemo(() => (
+        <Slider
+            className="h-3"
+            value={currentSeconds}
+            defaultValue={duration!}
+            max={duration! / 1000}
+            step={1}
+            onChange={durationChangeHandler}
+            onValueCommit={durationChangeCommitHandler}
+            onPointerDown={durationSliderPointerDownHandler}
+            onPointerUp={durationSliderPointerUpHandler}
+            aria-label="Sound duration"
+        />
+
+    ), [currentSeconds, duration, durationChangeCommitHandler]);
+
     useEffect(() => {
         sound?.play();
 
@@ -157,9 +173,9 @@ export const PlayerContent: FC<IPlayerContent> = ({ song, songUrl }): JSX.Elemen
         <div>
             <div
                 className="
-                grid
-                grid-cols-2
-                md:grid-cols-3
+                flex
+                justify-between
+                gap-x-4
                 h-full
             "
             >
@@ -167,6 +183,7 @@ export const PlayerContent: FC<IPlayerContent> = ({ song, songUrl }): JSX.Elemen
                     className="
                     flex
                     w-full
+                    min-w-0
                     justify-start
                 "
                 >
@@ -175,10 +192,13 @@ export const PlayerContent: FC<IPlayerContent> = ({ song, songUrl }): JSX.Elemen
                         flex
                         items-center
                         gap-x-4
+                        min-w-0
+                        w-full
+                        md:w-auto
                     "
                     >
-                        <MediaItem data={song} />
-                        <LikeButton song={song} />
+                        <MediaItem data={song}/>
+                        <LikeButton song={song}/>
                     </div>
                 </div>
                 <div
@@ -186,7 +206,7 @@ export const PlayerContent: FC<IPlayerContent> = ({ song, songUrl }): JSX.Elemen
                         flex
                         md:hidden
                         col-auto
-                        w-full
+                        md:w-full
                         justify-end
                         items-center
                     "
@@ -205,7 +225,7 @@ export const PlayerContent: FC<IPlayerContent> = ({ song, songUrl }): JSX.Elemen
                         "
                         onClick={playHandler}
                     >
-                        <Icon className="text-black" size={30} />
+                        <Icon className="text-black" size={30}/>
                     </button>
                 </div>
 
@@ -253,7 +273,7 @@ export const PlayerContent: FC<IPlayerContent> = ({ song, songUrl }): JSX.Elemen
                             "
                             onClick={playHandler}
                         >
-                            <Icon className="text-black" size={30} />
+                            <Icon className="text-black" size={30}/>
                         </button>
                         <button onClick={onPlayNext}>
                             <AiFillStepForward
@@ -283,18 +303,7 @@ export const PlayerContent: FC<IPlayerContent> = ({ song, songUrl }): JSX.Elemen
                         >
                             {currentTime}
                         </span>
-                        <Slider
-                            className="h-3"
-                            value={currentSeconds}
-                            defaultValue={duration!}
-                            max={duration! / 1000}
-                            step={1}
-                            onChange={durationChangeHandler}
-                            onValueCommit={durationChangeCommitHandler}
-                            onPointerDown={durationSliderPointerDownHandler}
-                            onPointerUp={durationSliderPointerUpHandler}
-                            aria-label="Sound duration"
-                        />
+                        {sliderComponent}
                         <span
                             className="
                                 text-sm
@@ -324,7 +333,7 @@ export const PlayerContent: FC<IPlayerContent> = ({ song, songUrl }): JSX.Elemen
                     "
                     >
                         <button onClick={toggleMute}>
-                            <VolumeIcon size={34} />
+                            <VolumeIcon size={34}/>
                         </button>
                         <Slider
                             className="h-10"
@@ -335,6 +344,16 @@ export const PlayerContent: FC<IPlayerContent> = ({ song, songUrl }): JSX.Elemen
                         />
                     </div>
                 </div>
+            </div>
+            <div
+                className="
+                    flex
+                    items-center
+                    justify-center
+                    gap-x-3
+                "
+            >
+                {sliderComponent}
             </div>
         </div>
     );

@@ -32,6 +32,7 @@ export const MediaItem: FC<IMediaItem> = ({ data, onClick }): JSX.Element => {
                 p-2
                 rounded-md
                 text-left
+                min-w-0
             "
             onClick={clickHandler}
         >
