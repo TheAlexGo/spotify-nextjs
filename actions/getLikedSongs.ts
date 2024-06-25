@@ -1,4 +1,4 @@
-import { ISong } from '@/types';
+import { ILikedSong, ISong } from '@/types';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
@@ -30,7 +30,7 @@ export const getLikedSongs = async (): Promise<ISong[]> => {
         return [];
     }
 
-    return data.map((song) => ({
+    return data.map((song: Omit<ISong, 'liked'> & { liked_songs: ILikedSong[] }) => ({
         ...song,
         liked: Boolean(song.liked_songs.length),
     }));

@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, JSX, useEffect, useMemo, useState } from 'react';
+import { FC, JSX, useCallback, useEffect, useMemo, useState } from 'react';
 import { ISong } from '@/types';
 import { MediaItem } from '@/components/MediaItem/MediaItem';
 import { LikeButton } from '@/components/LikeButton/LikeButton';
@@ -95,10 +95,10 @@ export const PlayerContent: FC<IPlayerContent> = ({ song, songUrl }): JSX.Elemen
         setCurrentSeconds(value);
     };
 
-    const durationChangeCommitHandler = ([value]: number[]) => {
+    const durationChangeCommitHandler = useCallback(([value]: number[]) => {
         sound?.seek(value);
         setCurrentSeconds(value);
-    };
+    }, [sound]);
 
     const durationSliderPointerDownHandler = () => {
         setIsDragged(true);

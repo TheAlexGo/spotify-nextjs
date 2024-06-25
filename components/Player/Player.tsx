@@ -9,7 +9,7 @@ import { PlayerContent } from '@/components/PlayerContent/PlayerContent';
 interface IPlayer {
 }
 
-export const Player: FC<IPlayer> = ({...props}): JSX.Element | null => {
+export const Player: FC<IPlayer> = (): JSX.Element | null => {
     const player = usePlayer();
     const { song } = useGetSongById(player.activeId);
 
