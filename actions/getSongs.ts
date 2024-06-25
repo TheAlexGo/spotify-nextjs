@@ -27,7 +27,7 @@ export const getSongs = async (): Promise<ISong[]> => {
         console.log(error);
     }
 
-    return data!.map((song) => {
+    return data!.map((song: Omit<ISong, 'liked'> & { liked_songs: ILikedSong[] }) => {
         return {
             ...song,
             liked: user
